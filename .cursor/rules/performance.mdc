@@ -1,0 +1,44 @@
+---
+description: "Performance constraints for Excalidraw canvas, collaboration, persistence, and app-shell code"
+globs: "**/*.{ts,tsx,mts,js}"
+alwaysApply: false
+---
+
+# Performance Rules
+
+## Scope
+
+Apply these checks when changing render loops, editor/app orchestration, collaboration sync, persistence, import/export, lazy-loaded dialogs, or build/runtime chunking.
+
+## Hot Paths
+
+- Treat canvas render paths, pointer/mouse handlers, scroll/zoom handlers, scene reconciliation, and collaboration broadcasts as hot paths.
+- Do not add expensive work directly inside frequently fired handlers. Reuse existing helpers such as `throttle`, `throttleRAF`, or `debounce` when side effects do not need to run per event.
+- Avoid cloning, serializing, filtering, or deep-transforming the whole scene on every render or pointer update unless the existing flow already requires it.
+- Prefer existing scene/version guards such as `getSceneVersion(...)`, syncable-element filtering, and save/broadcast queues before introducing new repeated work.
+
+## Persistence And Collaboration
+
+- Keep local persistence batched and delayed through the existing `LocalData` save pipeline; do not introduce eager writes to `localStorage` or IndexedDB on every minor change.
+- Preserve the current separation between realtime socket updates and throttled durable saves; do not turn Firebase persistence into a per-event write path.
+- For collaboration changes, favor incremental updates and reconciliation over rebroadcasting or reloading the full scene.
+- Any new polling, interval, timeout, or retry loop must have a clear lifecycle and cleanup on unmount or disconnect.
+
+## Loading And Bundling
+
+- Lazy load heavy or optional functionality when the repo already does so, especially for collaboration, CodeMirror, Mermaid, QR helpers, or infrequently opened dialogs.
+- Do not convert dynamically imported features into eager top-level imports without a measured reason.
+- Preserve the current chunking intent in `excalidraw-app/vite.config.mts`: locales, CodeMirror, Mermaid, and other large optional features should remain split when possible.
+- Avoid adding large new dependencies or large static assets without explicit approval.
+
+## React And App Shell
+
+- Keep React render work narrow. Avoid introducing state updates that force broad tree re-renders from high-frequency signals.
+- Prefer existing imperative/editor APIs, stores, and focused subscriptions over duplicating derived state in multiple places.
+- When adding effects, make dependency lists intentional and ensure listeners, timers, and subscriptions are always cleaned up.
+
+## How to Verify
+
+1. When changing a hot path, confirm the new code does not increase save frequency, broadcast frequency, or eager bundle cost without justification.
+2. Add or update focused tests when behavior changes depend on throttling, batching, deferred persistence, or lazy-loading boundaries.
+3. Review imports and build-affecting changes to ensure optional features remain lazy-loaded and existing chunk boundaries are not collapsed accidentally.

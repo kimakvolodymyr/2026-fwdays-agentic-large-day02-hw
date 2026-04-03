@@ -63,6 +63,16 @@
 - `yarn test:coverage`
 - `yarn fix`
 
+## Repository Guardrails
+
+- Cursor rule files live in `.cursor/rules/*.mdc`.
+- Cursor command prompts live in `.cursor/commands/*.md`.
+- Current repo-specific rules cover architecture constraints, code conventions, protected files, testing expectations, security checks, and performance checks.
+- The security rule is global and is intended to gate changes involving embeds, `postMessage`, browser persistence, Firebase/env-backed integrations, and import/export boundaries.
+- The performance rule targets TypeScript/JavaScript source and is intended to gate changes involving hot-path event handling, debounced persistence, collaboration sync cadence, and bundle-splitting behavior.
+- All current Cursor rules are documented with an explicit `How to Verify` section so review expectations are part of the rule itself.
+- Current Cursor command prompts include reusable entry points for code review and component creation workflows.
+
 ### Service Commands
 
 - `yarn locales-coverage`

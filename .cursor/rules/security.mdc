@@ -1,0 +1,47 @@
+---
+description: "Security constraints for Excalidraw app, embeds, sharing, and browser persistence"
+globs: "**/*"
+alwaysApply: false
+---
+
+# Security Rules
+
+## Scope
+
+Apply these checks whenever a change touches collaboration, sharing, embeds, browser storage, import/export, URL handling, Firebase access, or any code that crosses window/document boundaries.
+
+## Data Handling
+
+- Treat scene data, collaboration room keys, JWTs, Firebase payloads, localStorage contents, IndexedDB files, and share links as sensitive.
+- NEVER hardcode secrets, private keys, tokens, passwords, or production credentials in source, tests, fixtures, docs, or examples.
+- Public config values that are already repo-backed through Vite envs are acceptable only through `import.meta.env.*`; do not inline new environment-specific values in code.
+- Keep persisted browser data minimal. Only store the fields required for restore or UX continuity, and prefer existing sanitization helpers such as `clearAppStateForLocalStorage(...)`.
+- Do not add logging, telemetry, or error reporting that serializes full scene contents, localStorage dumps, auth material, or collaboration secrets.
+
+## Browser Boundaries
+
+- Any new `postMessage` flow MUST validate `event.origin` against an explicit allowlist before reading message data.
+- Always send `postMessage` with an explicit `targetOrigin`; NEVER use `"*"`.
+- Cross-window or iframe flows that grant access to scene data MUST require explicit verification equivalent to the existing JWT + origin checks in `excalidraw-app/ExcalidrawPlusIframeExport.tsx`.
+- Do not introduce permissive iframe behavior. Preserve sandbox restrictions and reuse the existing embed validation path instead of bypassing it.
+
+## URLs, Embeds, And HTML
+
+- Reuse the existing embeddable allowlist and validation flow in `packages/element/src/embeddable.ts`; do not add arbitrary third-party embed domains without explicit approval.
+- When adding an allowed embed domain, document why it is safe and keep `allowSameOrigin` as narrow as possible.
+- Parse external URLs with `URL`/existing helpers and validate hostnames or identifiers before use.
+- Avoid `dangerouslySetInnerHTML`, `innerHTML`, `srcdoc`, or raw HTML parsing unless there is no practical alternative and the content is generated from trusted code paths.
+- NEVER introduce `eval`, `new Function`, or equivalent dynamic code execution.
+
+## Collaboration, Persistence, And Backend Flows
+
+- Preserve the existing encryption/verification expectations for collaboration and shared-scene persistence; do not send plaintext sensitive collaboration state to remote services.
+- Keep Firebase/storage paths scoped and deterministic; do not create writes keyed directly by unchecked user input.
+- For import/export and restore flows, assume file contents and stored JSON may be malformed or hostile: validate, catch parse failures, and fail safely.
+- Do not expand localStorage usage to store secrets or long-lived authorization material.
+
+## How to Verify
+
+1. Add or update focused tests when changing security-sensitive behavior such as embed validation, message origin checks, persistence sanitization, auth/token verification, or share/import/export boundaries.
+2. Manually inspect new browser-boundary code to confirm explicit origin allowlists, explicit `targetOrigin`, and no bypass of existing embed or storage safeguards.
+3. Call out any unavoidable security tradeoff in the PR or change summary.

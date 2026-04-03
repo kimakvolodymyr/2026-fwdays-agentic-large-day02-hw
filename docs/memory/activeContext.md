@@ -71,6 +71,9 @@ This does not mean those areas do not exist elsewhere, only that they are not ce
 - `App.tsx` in both app shell and editor package are large orchestration points.
 - Vite config has explicit chunking and PWA setup, indicating performance and delivery remain active concerns.
 - Test infrastructure is extensive, which suggests ongoing effort to stabilize editor behavior.
+- Workspace-level Cursor rules in `.cursor/rules/*.mdc` now include a repo-specific security guardrail covering embeds, `postMessage`, persistence, and env-backed integrations.
+- Workspace-level Cursor rules now also include a performance guardrail for hot paths such as canvas interactions, collaboration sync, local persistence, and lazy-loaded app-shell features.
+- Workspace-level Cursor tooling now also includes `.cursor/commands/*.md` prompts for standardized code review and component creation workflows.
 - Git history in this snapshot is shallow and does not expose a detailed feature narrative, so active focus is inferred mainly from code organization.
 
 ## Current Working Assumption

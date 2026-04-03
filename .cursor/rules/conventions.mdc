@@ -23,3 +23,9 @@ alwaysApply: false
 
 - kebab-case for files: `element-utils.ts`
 - PascalCase for components: `LayerUI.tsx`
+
+## How to Verify
+
+1. Check the changed files for named exports, functional components, type-only imports where applicable, and strict TypeScript usage without `any` or `@ts-ignore`.
+2. Confirm new file names and colocated tests follow the nearest existing naming pattern in the touched package.
+3. Run `yarn test:typecheck` from the repository root after TypeScript changes.

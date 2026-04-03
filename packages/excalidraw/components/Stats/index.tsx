@@ -24,12 +24,11 @@ import Angle from "./Angle";
 import CanvasGrid from "./CanvasGrid";
 import Collapsible from "./Collapsible";
 import Dimension from "./Dimension";
+import ElementCoordinates from "./ElementCoordinates";
 import FontSize from "./FontSize";
 import MultiAngle from "./MultiAngle";
 import MultiDimension from "./MultiDimension";
 import MultiFontSize from "./MultiFontSize";
-import MultiPosition from "./MultiPosition";
-import Position from "./Position";
 import { getAtomicUnits } from "./utils";
 
 import "./Stats.scss";
@@ -299,19 +298,10 @@ export const StatsInner = memo(
                           : t(`element.${singleElement.type}`)}
                       </StatsRow>
 
-                      <StatsRow>
-                        <Position
+                      <StatsRow columns={2}>
+                        <ElementCoordinates
+                          type="single"
                           element={singleElement}
-                          property="x"
-                          elementsMap={elementsMap}
-                          scene={scene}
-                          appState={appState}
-                        />
-                      </StatsRow>
-                      <StatsRow>
-                        <Position
-                          element={singleElement}
-                          property="y"
                           elementsMap={elementsMap}
                           scene={scene}
                           appState={appState}
@@ -363,19 +353,9 @@ export const StatsInner = memo(
                         <div>{selectedElements.length}</div>
                       </StatsRow>
 
-                      <StatsRow>
-                        <MultiPosition
-                          property="x"
-                          elements={multipleElements}
-                          elementsMap={elementsMap}
-                          atomicUnits={atomicUnits}
-                          scene={scene}
-                          appState={appState}
-                        />
-                      </StatsRow>
-                      <StatsRow>
-                        <MultiPosition
-                          property="y"
+                      <StatsRow columns={2}>
+                        <ElementCoordinates
+                          type="multiple"
                           elements={multipleElements}
                           elementsMap={elementsMap}
                           atomicUnits={atomicUnits}

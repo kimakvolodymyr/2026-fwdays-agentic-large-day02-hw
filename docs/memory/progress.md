@@ -65,6 +65,8 @@ That assessment is based on:
 - Vitest is configured with coverage thresholds.
 - The editor package includes a large test suite with snapshots, fixtures, history tests, regression tests, and interaction tests.
 - Vite build config includes chunking, sourcemaps, and PWA caching strategy.
+- `.cursor/rules/security.mdc` documents repository-specific security review expectations for embeds, browser storage, cross-window messaging, Firebase-backed flows, and sensitive scene/share data handling.
+- `.cursor/rules/performance.mdc` documents repository-specific performance review expectations for event hot paths, deferred persistence, collaboration throttling, cleanup of timers/listeners, and lazy-loaded bundle boundaries.
 
 ## Open Or Unclear Areas
 

@@ -64,6 +64,18 @@ This is a reconstructed decision log from the current source tree, not a histori
 - Why: the embeddable editor is one of the primary outputs of the repository, not a side artifact.
 - Evidence: `packages/excalidraw/README.md`; `examples/with-nextjs`; `examples/with-script-in-browser`.
 
+## 11. Capture repository security guardrails as Cursor rules
+
+- Decision: keep a global `.cursor/rules/security.mdc` rule for sensitive cross-cutting areas.
+- Why: this repo exposes browser persistence, collaboration links, Firebase-backed sharing, embeds, and iframe messaging, so agent-authored changes need explicit guardrails around origin validation, allowlists, and sensitive data handling.
+- Evidence: `.cursor/rules/security.mdc`; embed allowlist and sandbox behavior in `packages/element/src/embeddable.ts`; iframe export origin/JWT checks in `excalidraw-app/ExcalidrawPlusIframeExport.tsx`; local persistence helpers in `excalidraw-app/data/localStorage.ts`.
+
+## 12. Capture repository performance guardrails as Cursor rules
+
+- Decision: keep a `.cursor/rules/performance.mdc` rule for hot-path and bundle-sensitive changes.
+- Why: the app combines canvas rendering, throttled collaboration, debounced persistence, and explicit Vite chunking/PWA behavior, so agent-authored changes need a consistent check against eager work in high-frequency paths.
+- Evidence: `.cursor/rules/performance.mdc`; debounced local save pipeline in `excalidraw-app/data/LocalData.ts`; throttled collaboration broadcasts and file loading in `excalidraw-app/collab/Collab.tsx`; manual chunking and runtime caching in `excalidraw-app/vite.config.mts`.
+
 ## Related Docs
 
 - Architecture rationale context: `docs/technical/architecture.md`

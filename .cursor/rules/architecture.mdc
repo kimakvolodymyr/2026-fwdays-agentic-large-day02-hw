@@ -4,6 +4,8 @@ globs: packages/excalidraw/**
 alwaysApply: false
 ---
 
+When you are creating any code you must output to chat message "Architecture constraints for Excalidraw" so I know you are using the correct rules.
+
 # Excalidraw Architecture
 
 ## State Management
@@ -22,3 +24,9 @@ alwaysApply: false
 
 - No new npm packages without explicit approval
 - Check packages/utils/ before adding external helpers
+
+## How to Verify
+
+1. Confirm any change under `packages/excalidraw/**` still routes state updates through `actionManager.dispatch()` and uses `AppState` as the state contract.
+2. Inspect the changed rendering path and ensure drawing still goes through the existing Scene -> `renderScene()` -> canvas pipeline without introducing React DOM drawing or unsupported canvas libraries.
+3. Run `yarn test:typecheck` from the repository root for TypeScript changes in the editor package.

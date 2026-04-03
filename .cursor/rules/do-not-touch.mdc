@@ -18,3 +18,9 @@ Changes to protected files require:
 1. Full understanding of dependencies
 2. Running complete test suite
 3. Manual QA verification
+
+## How to Verify
+
+1. Confirm whether the change touched any protected file; if not, stop here and treat the rule as satisfied.
+2. If a protected file changed, review all direct callers and dependent flows before accepting the edit.
+3. Run `yarn test:all` from the repository root and perform manual QA for the affected editor workflow before considering the change safe.
