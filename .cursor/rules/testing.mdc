@@ -1,0 +1,25 @@
+---
+description: "Testing expectations for TypeScript changes in packages"
+globs: "packages/**/*.ts"
+alwaysApply: false
+---
+
+# Testing Rules
+
+## Context
+
+Excalidraw has behavior spread across actions, state transitions, scene logic, and utility code. Small TypeScript changes in `packages/**` can easily introduce regressions that are not obvious from static review alone, so code changes should either extend existing test coverage or justify why no test change is needed.
+
+## Rule
+
+- Add or update a focused Vitest test when changing behavior in `packages/**`, especially for actions, app state, scene logic, serializers, and shared utilities.
+- Follow the nearest existing test pattern: colocated `*.test.ts(x)` for module-specific behavior, or `packages/excalidraw/tests/**` for broader integration-style behavior.
+- Keep tests deterministic and behavior-oriented; assert visible state transitions, returned values, or rendered outcomes instead of implementation details.
+- Reuse existing test helpers and fixtures before introducing new ones.
+- DO NOT ship behavior changes without test coverage unless the change is strictly refactor-only and preserves behavior.
+- NEVER rely on brittle timing, random data, or network access in package tests.
+
+## How to verify
+
+1. Run the smallest relevant test scope first, for example the changed `*.test.ts(x)` file or a focused `vitest` target.
+2. Run `yarn test:app --watch=false` from the repository root if the change can affect shared Excalidraw behavior beyond a single isolated module.
